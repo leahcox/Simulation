@@ -98,13 +98,15 @@ def handleEvent(state, event):
 #    print("Handling event: " + str(event))
     if (event.type == pg.MOUSEBUTTONDOWN):
         if state[2] >= 0:
-           newstate = randint(-5,-1)
+            dw.fill(dw.blue)
+            newstate = randint(-5,-1)
         else:
-           newstate = randint(1,5)
+            dw.fill(dw.red)
+            newstate = randint(1,5)
         if state[3] >= 0:
-           newstate2 = randint(-5,-1)
+            newstate2 = randint(-5,-1)
         else:
-           newstate2 = randint(1,5)
+            newstate2 = randint(1,5)
         return((state[0], state[1], newstate, newstate2))
     else:
         return(state)
