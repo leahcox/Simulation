@@ -48,11 +48,14 @@ myimage = dw.loadImage("cat.bmp")
 #state = (300, 200, 2, 1)
 
 def updateDisplay(state):
-    if (state[0]>=200):
-        dw.fill(dw.blue)
+    if (150<=state[0]<=350 and 150<=state[1]<=350):
+        dw.fill(dw.green)
         dw.draw(myimage, (state[0],state[1]))
+    elif(50<=state[0]<=450 and 50<=state[1]<=450):
+        dw.fill(dw.yellow)
+        dw.draw(myimage, (state[0], state[1]))
     else:
-        dw.fill(dw.black)
+        dw.fill(dw.red)
         dw.draw(myimage, (state[0], state[1]))
 
 ################################################################
@@ -64,7 +67,6 @@ def updateDisplay(state):
 #
 # state -> state
 def updateState(state):
-    dw.fill(dw.blue)
     return(state[0]+state[2],state[1]+state[3],state[2],state[3])
 
 ################################################################
