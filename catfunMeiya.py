@@ -67,7 +67,10 @@ def updateDisplay(state):
 #
 # state -> state
 def updateState(state):
-    return(state[0]+state[2],state[1]+state[3],state[2],state[3])
+    if (state[0] > width or state[0] < -100 or state[1] > height or state[1] < -100):
+        return(state[0],state[1],state[2],state[3],state[4]-1)
+    else:
+        return(state[0]+state[2],state[1]+state[3],state[2],state[3],state[4])
 
 ################################################################
 
@@ -75,7 +78,7 @@ def updateState(state):
 # that is, when pos is less then zero or greater than the screen width
 # state -> bool
 def endState(state):
-    if (state[0] > width or state[0] < -100):
+    if (state[4] == 0):
         return True
     else:
         return False
@@ -109,7 +112,7 @@ def handleEvent(state, event):
             newstate2 = randint(-5,-1)
         else:
             newstate2 = randint(1,5)
-        return((state[0], state[1], newstate, newstate2))
+        return(state[0], state[1], newstate, newstate2, state[4])
     else:
         return(state)
 
@@ -119,7 +122,7 @@ def handleEvent(state, event):
 
 # The cat starts at the left, moving right 
 
-initState = (width/2, height/2, 1, 1)
+initState = (width/2, height/2, 1, 1, 3)
 
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
