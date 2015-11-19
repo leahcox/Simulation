@@ -36,6 +36,7 @@ width = 500
 height = 500
 rw.newDisplay(width, height, name)
 
+
 ################################################################
 
 # Display the state by drawing a cat at that x coordinate
@@ -48,6 +49,8 @@ myimage = dw.loadImage("cat.bmp")
 #state = (300, 200, 2, 1)
 
 def updateDisplay(state):
+    lifeDisplay= dw.makeLabel("Remaining lives:"+str(state[4]), "serif", 18, (0, 0, 0))
+    timeDisplay= dw.makeLabel("Time:0"+str(state[5])+":"+str(state[6]//60), "serif", 18, (255,255,255))
     if (150<=state[0]<=350 and 150<=state[1]<=350):
         dw.fill(dw.green)
         dw.draw(myimage, (state[0],state[1]))
@@ -57,21 +60,26 @@ def updateDisplay(state):
     else:
         dw.fill(dw.red)
         dw.draw(myimage, (state[0], state[1]))
-
+    dw.draw(lifeDisplay, (20, 15))
+    dw.draw(timeDisplay, (20, 35))
 ################################################################
 
 # Change pos by delta-pos, leaving delta-pos unchanged
 # Note that pos is accessed as state[0], and delta-pos
 # as state[1]. Later on we'll see how to access state
 # components by name (as we saw with records in Idris).
-#
 # state -> state
 def updateState(state):
     if (state[0] > width or state[0] < -100 or state[1] > height or state[1] < -100):
-        return(state[0],state[1],state[2],state[3],state[4]-1)
+        newlife = state[4] - 1
+        secondState = (width/2, height/2, 1, 1, newlife, state[5], state[6])
+        return(secondState)
     else:
-        return(state[0]+state[2],state[1]+state[3],state[2],state[3],state[4])
-
+        return(state[0]+state[2],state[1]+state[3],state[2],state[3],state[4],state[5],state[6]+1)
+    if ((state[6]//60) > 59):
+        return(state[0],state[1],state[2],state[3],state[4],state[5]+1,0)
+    else:
+        return(state)
 ################################################################
 
 # Terminate the simulation when the x coord reaches the screen edge,
@@ -112,7 +120,7 @@ def handleEvent(state, event):
             newstate2 = randint(-5,-1)
         else:
             newstate2 = randint(1,5)
-        return(state[0], state[1], newstate, newstate2, state[4])
+        return(state[0], state[1], newstate, newstate2, state[4], state[5], state[6])
     else:
         return(state)
 
@@ -121,8 +129,8 @@ def handleEvent(state, event):
 # World state will be single x coordinate at left edge of world
 
 # The cat starts at the left, moving right 
-
-initState = (width/2, height/2, 1, 1, 3)
+# initState = (x, y, dx, dy, lives, minutes, seconds)
+initState = (width/2, height/2, 1, 1, 3, 0, 1)
 
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
