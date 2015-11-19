@@ -50,7 +50,7 @@ myimage = dw.loadImage("cat.bmp")
 
 def updateDisplay(state):
     lifeDisplay= dw.makeLabel("Remaining lives:"+str(state[4]), "serif", 18, (0, 0, 0))
-    timeDisplay= dw.makeLabel("Time:0"+str(state[5])+":"+str(state[6]//60), "serif", 18, (255,255,255))
+    timeDisplay= dw.makeLabel("Time:0"+str(state[5])+":"+str(state[6]//60), "serif", 18, (0,0,0))
     if (150<=state[0]<=350 and 150<=state[1]<=350):
         dw.fill(dw.green)
         dw.draw(myimage, (state[0],state[1]))
