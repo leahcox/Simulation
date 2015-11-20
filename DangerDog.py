@@ -92,6 +92,9 @@ def updateState(state):
 # state -> bool
 def endState(state):
     if (state[4] == 0):
+        minute = str(state[5]//3600)
+        second = str((state[5]//60)%60)
+        print("Your record is",minute,"minutes",second,"seconds")
         return True
     else:
         return False
