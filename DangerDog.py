@@ -20,7 +20,7 @@ from numpy import int32
 # For example, the tuple (7,1,2) would represent the dog at x-coord,
 # 7, and moving to the right by 1 pixel per "clock tick," with two
 # lives remaining.
-# 
+#
 # The initial state of the dog in this program is (0,1,3), meaning that the dog
 # starts at the left of the screen and moves right one pixel per
 # tick. It starts with three lives.
@@ -58,17 +58,17 @@ myimage = dw.loadImage("puppy.bmp")
 #state = (300, 200, 2, 1, 3)
 
 def updateDisplay(state):
-    lifeDisplay= dw.makeLabel("Remaining lives:"+str(state[4]), "serif", 18, (0, 0, 0))
-    timeDisplay= dw.makeLabel("Time:0"+str(state[5]//3600)+":"+str((state[5]//60)%60), "serif", 18, (0,0,0))
-    if (150<=state[0]<=350 and 150<=state[1]<=350):
+    lifeDisplay= dw.makeLabel("Remaining lives:"+str(state.lives), "serif", 18, (0, 0, 0))
+    timeDisplay= dw.makeLabel("Time:0"+str(state.seconds//3600)+":"+str((state.seconds//60)%60), "serif", 18, (0,0,0))
+    if (150<=state.xcord<=350 and 150<=state.ycord<=350):
         dw.fill(dw.green)
-        dw.draw(myimage, (state[0],state[1]))
-    elif(50<=state[0]<=450 and 50<=state[1]<=450):
+        dw.draw(myimage, (state.xcord,state.ycord))
+    elif(50<=state.xcord<=450 and 50<=state.ycord<=450):
         dw.fill(dw.yellow)
-        dw.draw(myimage, (state[0], state[1]))
+        dw.draw(myimage, (state.xcord, state.ycord))
     else:
         dw.fill(dw.red)
-        dw.draw(myimage, (state[0], state[1]))
+        dw.draw(myimage, (state.xcord, state.ycord))
     dw.draw(lifeDisplay, (20, 15))
     dw.draw(timeDisplay, (20, 35))
 ################################################################
@@ -76,13 +76,18 @@ def updateDisplay(state):
 # Change pos by delta-pos, leaving delta-pos unchanged
 # state -> state
 def updateState(state):
-    if (state[0] > width or state[0] < -100 or state[1] > height or state[1] < -100):
-        newlife = state[4] - 1
-        secondState = (width/2, height/2, 1, 1, newlife, state[5])
-        return secondState
+    if (state.xcord > width or state.xcord < -100 or state.ycord > height or state.ycord < -100):
+        state.lives = state.lives - 1
+        state.xcord = width/2
+        state.ycord = height/2
+        state.dx = 1
+        state.dy = 1
+        return state
     else:
-        secondState = (state[0]+state[2],state[1]+state[3],state[2],state[3],state[4],state[5]+1)
-        return secondState
+        state.xcord = state.xcord + state.dx
+        state.ycord = state.ycord + state.dy
+        state.seconds = state.seconds + 1
+        return state
 ################################################################
 
 # Remove a life when the x coord reaches the screen edge,
@@ -91,9 +96,9 @@ def updateState(state):
 # represented by state[4], is equal to zero.
 # state -> bool
 def endState(state):
-    if (state[4] == 0):
-        minute = str(state[5]//3600)
-        second = str((state[5]//60)%60)
+    if (state.lives == 0):
+        minute = str(state.seconds//3600)
+        second = str((state.seconds//60)%60)
         print("Your record is",minute,"minutes",second,"seconds")
         return True
     else:
@@ -118,18 +123,18 @@ def endState(state):
 #from random import randint
 #print (randint(-5,5))
 
-def handleEvent(state, event):  
+def handleEvent(state, event):
 #    print("Handling event: " + str(event))
     if (event.type == pg.MOUSEBUTTONDOWN):
-        if state[2] >= 0:
-            newstate = randint(-5,-1)
+        if state.dx >= 0:
+            state.dx = randint(-5,-1)
         else:
-            newstate = randint(1,5)
-        if state[3] >= 0:
-            newstate2 = randint(-5,-1)
+            state.dx = randint(1,5)
+        if state.dy >= 0:
+            state.dy = randint(-5,-1)
         else:
-            newstate2 = randint(1,5)
-        return(state[0], state[1], newstate, newstate2, state[4], state[5])
+            state.dy = randint(1,5)
+        return(state)
     else:
         return(state)
 
@@ -137,12 +142,21 @@ def handleEvent(state, event):
 
 # The dog starts in the middle of the screen, moving diagonally
 # towards the bottom right corner, with three lives
-# initState = (x, y, dx, dy, lives, minutes, seconds)
-initState = (width/2, height/2, 1, 1, 3, 0)
+# initState = (x, y, dx, dy, lives, seconds)
+# initState = (width/2, height/2, 1, 1, 3, 0)
 
+class State:
+    xcord = width/2
+    ycord = height/2
+    dx = 1
+    dy = 1
+    lives = 3
+    seconds = 0
+
+initStateTest = State()
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
 
 # Run the simulation!
-rw.runWorld(initState, updateDisplay, updateState, handleEvent,
+rw.runWorld(initStateTest, updateDisplay, updateState, handleEvent,
             endState, frameRate)
