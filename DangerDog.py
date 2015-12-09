@@ -152,11 +152,10 @@ class State:
     dy = 1
     lives = 3
     seconds = 0
-
-initStateTest = State()
+initState = State()
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
 
 # Run the simulation!
-rw.runWorld(initStateTest, updateDisplay, updateState, handleEvent,
+rw.runWorld(initState, updateDisplay, updateState, handleEvent,
             endState, frameRate)
